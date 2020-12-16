@@ -12,12 +12,16 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class Ex2 implements Runnable{
+public class Ex2 implements Runnable {
 	private static MyFrame _win;
 	private static Arena _ar;
 	public static game_service gameServ;
+	public static dw_graph_algorithms ga;
+	public static int k = 0;
 	public static final double eps = 0.000000001;
 	public static ArrayList<ArrayList<CL_Pokemon>> groups;
+	public boolean firstPokemonInGroup = true;
+
 	public static void main(String[] a) {
 		Thread client = new Thread(new Ex2());
 		client.start();
@@ -25,55 +29,60 @@ public class Ex2 implements Runnable{
 
 	@Override
 	public void run() {
-		int scenario_num = 0;
-		String level = JOptionPane.showInputDialog("To load a level, please enter the level number [0-23]:");
-		try {
-			scenario_num = Integer.parseInt(level);
-		} catch (NumberFormatException ee) {
-			JOptionPane.showMessageDialog(null, "Only numbers are allowed! Level 0 will be loaded.");
-			scenario_num = 0;
-		}
-		if(scenario_num < 0  ||  scenario_num > 23){
-			JOptionPane.showMessageDialog(null, "Invalid number entered, level 0 will be loaded.");
-			scenario_num = 0;
-		}
-		System.out.println("Now starting game number: "+scenario_num);
-		gameServ = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
-		//	int id = 999;
-		//	game.login(id);
+		if(k==0) {
+			int scenario_num = 0;
+			String level = JOptionPane.showInputDialog("To load a level, please enter the level number [0-23]:");
+			try {
+				scenario_num = Integer.parseInt(level);
+			} catch (NumberFormatException ee) {
+				JOptionPane.showMessageDialog(null, "Only numbers are allowed! Level 0 will be loaded.");
+				scenario_num = 0;
+			}
+			if (scenario_num < 0 || scenario_num > 23) {
+				JOptionPane.showMessageDialog(null, "Invalid number entered, level 0 will be loaded.");
+				scenario_num = 0;
+			}
+			System.out.println("Now starting game number: " + scenario_num);
+			gameServ = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
+			//	int id = 999;
+			//	game.login(id);
 
 
 //		String g = gameServ.getGraph();
 //		String pks = gameServ.getPokemons();
 
+		}
 
 		try {
-			PrintWriter pw = new PrintWriter(new File("./level.txt"));
-			pw.write(gameServ.getGraph().toString());
-			pw.close();
-			DWGraph_Algo ga = new DWGraph_Algo();
+			if(k==0) {
+				PrintWriter pw = new PrintWriter(new File("./level.txt"));
+				pw.write(gameServ.getGraph().toString());
+				pw.close();
+				ga = new DWGraph_Algo();
 //			directed_weighted_graph g = new DWGraph_DS();
 //			ga.init(g);
-			ga.load("./level.txt");
-			System.out.println(ga.getGraph());
+				ga.load("./level.txt");
+				System.out.println(ga.getGraph());
+			}
 
 
 			//you should remove the following line and initialize 'gg' without using "getJava_Graph_Not_to_be_used()" metho.
 			directed_weighted_graph gg = ga.getGraph();
-			init(gameServ);
+			if(k==0) {
+				init(gameServ);
+			}
 			String pStr = gameServ.getPokemons();
-			System.out.println("p: "+pStr);
+			System.out.println("p: " + pStr);
 			ArrayList<CL_Pokemon> arrP = new ArrayList<CL_Pokemon>();
 			int i = 0;
-			StringTokenizer str = new StringTokenizer(pStr,"{},:[]\"");
+			StringTokenizer str = new StringTokenizer(pStr, "{},:[]\"");
 			//todo: delete next line
 			System.out.println("sss");
-			while(str.hasMoreTokens()){
-				if(i==0){
+			while (str.hasMoreTokens()) {
+				if (i == 0) {
 					str.nextToken();
 					i++;
-				}
-				else {
+				} else {
 					str.nextToken();
 					str.nextToken();
 					double value = Double.parseDouble(str.nextToken());
@@ -84,10 +93,10 @@ public class Ex2 implements Runnable{
 					double x = Double.parseDouble(str.nextToken());
 					double y = Double.parseDouble(str.nextToken());
 					double z = Double.parseDouble(str.nextToken());
-					Point3D pos = new Point3D(x,y,z);
+					Point3D pos = new Point3D(x, y, z);
 					boolean flag = true;
 					Collection<node_data> vS = gg.getV();
-					for(node_data v : vS) {
+					for (node_data v : vS) {
 						//System.out.println((v+","));
 						if (flag) {
 							Collection<edge_data> eS = gg.getE(v.getKey());
@@ -131,46 +140,54 @@ public class Ex2 implements Runnable{
 			Iterator<CL_Pokemon> iter = arrP.iterator();
 			CL_Pokemon run = iter.next();
 			//todo: use JSONObject like in Arena.java, line 83.
-			StringTokenizer temp = new StringTokenizer(gameServ.toString(),"{}[],:\"");
+			StringTokenizer temp = new StringTokenizer(gameServ.toString(), "{}[],:\"");
 
-			for (int j=1 ; j<19 ; j++) {
+			for (int j = 1; j < 19; j++) {
 				temp.nextToken();
 			}
 			int numAgents = Integer.parseInt(temp.nextToken());
 			ArrayList<ArrayList<CL_Pokemon>> pS = new ArrayList<ArrayList<CL_Pokemon>>();
-			for(int j=0; j<numAgents ; j++){
+			for (int j = 0; j < numAgents; j++) {
 				pS.add(new ArrayList<CL_Pokemon>());
 			}
-			int group = arrP.size()/numAgents;
-
+			int group = arrP.size() / numAgents;
+			System.out.println("!!!!!!!!!!!!!!"+arrP.toString());
 			System.out.println("Pokemons in each group: " + group);
 			System.out.println("Number of pokemon groups to catch: " + pS.size());
-			for (int j=0 ; j<numAgents ; j++ ){
+			for (int j = 0; j < numAgents; j++) {
 				ArrayList<CL_Pokemon> agentI = pS.get(j);
 				agentI.add(run);
-				for(int k=0 ; k<group-1 ; k++){
+				for (int k = 0; k < group - 1; k++) {
 					arrP.remove(run);
-					run = minBetweenPokemon(arrP,run,ga);
+					run = minBetweenPokemon(arrP, run, ga);
 					agentI.add(run);
 				}
 				arrP.remove(run);
-				run = minBetweenPokemon(arrP,run,ga);
+				run = minBetweenPokemon(arrP, run, ga);
 			}
 
-			for(int j=0 ; j<numAgents ; j++){
-				gameServ.addAgent(pS.get(j).get(0).get_edge().getSrc());
-				System.out.println("agents: " + gameServ.getAgents());
-				System.out.println(pS.get(j).get(0).get_edge().getSrc());
+			if(k==0) {
+				for (int j = 0; j < numAgents; j++) {
+					gameServ.addAgent(pS.get(j).get(0).get_edge().getSrc());
+					//todo: remove this
+					System.out.println("agents: " + gameServ.getAgents());
+					System.out.println(pS.get(j).get(0).get_edge().getSrc());
+				}
 			}
-			System.out.println(pS);
-			groups=pS;
+			System.out.println("arr: " + pS);
+			groups = pS;
+			System.out.println();
 
 			//addAgent should go here
+			if(k==0) {
+				gameServ.startGame();
 
-			gameServ.startGame();
-			_win.setTitle("Ex2 - OOP: Pokemon Game by ZIV MADAR");
-			int ind = 0;
-			long dt = 300;
+				_win.setTitle("Ex2 - OOP: Pokemon Game by ZIV MADAR");
+				k++;
+			}
+				int ind = 0;
+				long dt = 300;
+
 
 			while (gameServ.isRunning()) {
 				moveAgants(gameServ, gg);
@@ -188,19 +205,18 @@ public class Ex2 implements Runnable{
 
 			System.out.println(res);
 			System.exit(0);
-		}
-		catch (FileNotFoundException e){
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	private CL_Pokemon minBetweenPokemon(Collection<CL_Pokemon> arrP,CL_Pokemon pok,dw_graph_algorithms graphAlgo){
+	private static CL_Pokemon minBetweenPokemon(Collection<CL_Pokemon> arrP, CL_Pokemon pok, dw_graph_algorithms graphAlgo) {
 		double min = Double.MAX_VALUE;
 		CL_Pokemon ans = null;
-		for(CL_Pokemon p : arrP){
-			double dis = graphAlgo.shortestPathDist(pok.get_edge().getDest(),p.get_edge().getSrc())+p.get_edge().getWeight();
-			if(dis < min){
+		for (CL_Pokemon p : arrP) {
+			double dis = graphAlgo.shortestPathDist(pok.get_edge().getDest(), p.get_edge().getSrc()) + p.get_edge().getWeight();
+			if (dis < min) {
 				min = dis;
 				ans = p;
 			}
@@ -211,6 +227,7 @@ public class Ex2 implements Runnable{
 	/**
 	 * Moves each of the agents along the edge,
 	 * in case the agent is on a node the next destination (next edge) is chosen (randomly).
+	 *
 	 * @param game
 	 * @param gg
 	 * @param
@@ -218,24 +235,152 @@ public class Ex2 implements Runnable{
 	private static void moveAgants(game_service game, directed_weighted_graph gg) {
 
 		String lg = game.move();
-		List<CL_Agent> log = Arena.getAgents(lg, gg);
-		System.out.println("CL_agents: "+log);
-		_ar.setAgents(log);
-		String fs =  game.getPokemons();
-		List<CL_Pokemon> ffs = Arena.json2Pokemons(fs);
-		_ar.setPokemons(ffs);
-//	//	ArrayList<OOP_Point3D> rs = new ArrayList<OOP_Point3D>();
-//		for(int i=0 ; i< log.size() ; i++){
-//			CL_Agent ag = log.get(i);
-//			for(int j=0 ; j<groups.get(i).size()-1 ; j++){
-//				game.chooseNextEdge(groups.get(i).get(j).get_edge().getSrc(),groups.get(i).get(j).get_edge().getDest());
-//				game.move();
-//				game.chooseNextEdge(groups.get(i).get(j).get_edge().getDest(),groups.get(i).get(j+1).get_edge().getSrc());
+//        System.out.println("pokemons for agent 2: " + groups.get(2));
+		List<CL_Agent> log = null;
+
+			log = Arena.getAgents(lg, gg);
+
+			System.out.println("CL_agents: " + log);
+			_ar.setAgents(log);
+			String fs = game.getPokemons();
+			List<CL_Pokemon> ffs = Arena.json2Pokemons(fs);
+			_ar.setPokemons(ffs);
+
+//		ArrayList<OOP_Point3D> rs = new ArrayList<OOP_Point3D>();
+		//todo: remove this
+//        if(game.isRunning() && )
+//        game.chooseNextEdge(2,32);
+//        game.chooseNextEdge(1,3);
+//        game.move();
+
+
+//        for(int i=0 ; i < log.size() ; i++) {
+//            CL_Agent ag = log.get(i);
+//            int id = ag.getID();
+//            int dest = ag.getNextNode();
+//            int src = ag.getSrcNode();
+//            double v = ag.getValue();
+//            if (dest == -1) {
+//
+//            }
+//        }
+//        game.move();
+//	while(true){
+
+		for (int i = 0; i < log.size(); i++) {
+			CL_Agent ag = log.get(i);
+			if (ag.getNextNode() == -1) {
+				for (int j = 0; j < groups.get(i).size(); j++) {
+					System.out.println("agentID: " + groups.get(i).get(j).get_edge().getSrc());
+					game.chooseNextEdge(i, groups.get(i).get(j).get_edge().getDest());
+					lg = game.move();
+					//game.chooseNextEdge(i, groups.get(i).get(j).get_edge().getDest());
+				}
+				//game.chooseNextEdge(groups.get(i).get(groups.get(i).size() - 1).get_edge().getSrc(), groups.get(i).get(groups.get(i).size() - 1).get_edge().getDest());
+			}
+		}
+		Thread client = new Thread(new Ex2());
+		client.start();
+
+
+//		String pStr = gameServ.getPokemons();
+//		System.out.println("p: "+pStr);
+//		ArrayList<CL_Pokemon> arrP = new ArrayList<CL_Pokemon>();
+//		int i = 0;
+//		StringTokenizer str = new StringTokenizer(pStr,"{},:[]\"");
+//		//todo: delete next line
+//		System.out.println("sss");
+//		while(str.hasMoreTokens()){
+//			if(i==0){
+//				str.nextToken();
+//				i++;
 //			}
-//			game.chooseNextEdge(groups.get(i).get(groups.get(i).size()-1).get_edge().getSrc(),groups.get(i).get(groups.get(i).size()-1).get_edge().getDest());
+//			else {
+//				str.nextToken();
+//				str.nextToken();
+//				double value = Double.parseDouble(str.nextToken());
+//				//System.out.println("v="+value);
+//				str.nextToken();
+//				int type = Integer.parseInt(str.nextToken());
+//				str.nextToken();
+//				double x = Double.parseDouble(str.nextToken());
+//				double y = Double.parseDouble(str.nextToken());
+//				double z = Double.parseDouble(str.nextToken());
+//				Point3D pos = new Point3D(x,y,z);
+//				boolean flag = true;
+//				Collection<node_data> vS = gg.getV();
+//				for(node_data v : vS) {
+//					//System.out.println((v+","));
+//					if (flag) {
+//						Collection<edge_data> eS = gg.getE(v.getKey());
+//						for (edge_data e : eS) {
+//							if (flag) {
+//								//System.out.println(e);
+//								node_data nSrc = gg.getNode(e.getSrc());
+//								node_data nDest = gg.getNode(e.getDest());
+//								geo_location pSrc = nSrc.getLocation();
+//								geo_location pDest = nDest.getLocation();
+//								double tX = (pos.x() - pSrc.x()) * (pDest.y() - pSrc.y());
+//								double tY = (pos.y() - pSrc.y()) * (pDest.x() - pSrc.x());
+//								//double tZ = (pos.z()-pSrc.z())/(pDest.z()-pSrc.z());
+//
+//								if (Math.abs(tX - tY) < eps) {
+//
+//									if (type == -1) {
+//										int min = Math.min(nSrc.getKey(), nDest.getKey());
+//										int max = Math.max(nSrc.getKey(), nDest.getKey());
+//										CL_Pokemon p = new CL_Pokemon(pos, type, value, 0, new EdgeData(max, min, e.getWeight()));
+//										arrP.add(p);
+//										flag = false;
+//
+//									} else {
+//										int min = Math.min(nSrc.getKey(), nDest.getKey());
+//										int max = Math.max(nSrc.getKey(), nDest.getKey());
+//										CL_Pokemon p = new CL_Pokemon(pos, type, value, 0, new EdgeData(min, max, e.getWeight()));
+//										arrP.add(p);
+//										flag = false;
+//
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//
+//		Iterator<CL_Pokemon> iter = arrP.iterator();
+//		CL_Pokemon run = iter.next();
+//		//todo: use JSONObject like in Arena.java, line 83.
+//		StringTokenizer temp = new StringTokenizer(gameServ.toString(),"{}[],:\"");
+//
+//		for (int j=1 ; j<19 ; j++) {
+//			temp.nextToken();
+//		}
+//		int numAgents = Integer.parseInt(temp.nextToken());
+//		ArrayList<ArrayList<CL_Pokemon>> pS = new ArrayList<ArrayList<CL_Pokemon>>();
+//		for(int j=0; j<numAgents ; j++){
+//			pS.add(new ArrayList<CL_Pokemon>());
+//		}
+//		int group = arrP.size()/numAgents;
+//
+//		System.out.println("Pokemons in each group: " + group);
+//		System.out.println("Number of pokemon groups to catch: " + pS.size());
+//		for (int j=0 ; j<numAgents ; j++ ){
+//			ArrayList<CL_Pokemon> agentI = pS.get(j);
+//			agentI.add(run);
+//			for(int k=0 ; k<group-1 ; k++){
+//				arrP.remove(run);
+//				run = minBetweenPokemon(arrP,run,ga);
+//				agentI.add(run);
+//			}
+//			arrP.remove(run);
+//			run = minBetweenPokemon(arrP,run,ga);
+//		}
 
-
-	}
+//	}
+}
 
 
 //		for(int i=0;i<log.size();i++) {
@@ -250,7 +395,7 @@ public class Ex2 implements Runnable{
 //				System.out.println("Agent: "+id+", val: "+v+"   turned to node: "+dest);
 //			}
 //		}
-//	}
+
 	/**
 	 * a very simple random walk implementation!
 	 * @param g
