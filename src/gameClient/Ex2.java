@@ -22,7 +22,7 @@ public class Ex2 implements Runnable{
 		Thread client = new Thread(new Ex2());
 		client.start();
 	}
-	
+
 	@Override
 	public void run() {
 		int scenario_num = 0;
@@ -37,9 +37,10 @@ public class Ex2 implements Runnable{
 			JOptionPane.showMessageDialog(null, "Invalid number entered, level 0 will be loaded.");
 			scenario_num = 0;
 		}
+		System.out.println("Now starting game number: "+scenario_num);
 		gameServ = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
-	//	int id = 999;
-	//	game.login(id);
+		//	int id = 999;
+		//	game.login(id);
 
 
 //		String g = gameServ.getGraph();
@@ -60,11 +61,12 @@ public class Ex2 implements Runnable{
 			//you should remove the following line and initialize 'gg' without using "getJava_Graph_Not_to_be_used()" metho.
 			directed_weighted_graph gg = ga.getGraph();
 			init(gameServ);
- 			String pStr = gameServ.getPokemons();
+			String pStr = gameServ.getPokemons();
 			System.out.println("p: "+pStr);
 			ArrayList<CL_Pokemon> arrP = new ArrayList<CL_Pokemon>();
 			int i = 0;
 			StringTokenizer str = new StringTokenizer(pStr,"{},:[]\"");
+			//todo: delete next line
 			System.out.println("sss");
 			while(str.hasMoreTokens()){
 				if(i==0){
@@ -128,6 +130,7 @@ public class Ex2 implements Runnable{
 
 			Iterator<CL_Pokemon> iter = arrP.iterator();
 			CL_Pokemon run = iter.next();
+			//todo: use JSONObject like in Arena.java, line 83.
 			StringTokenizer temp = new StringTokenizer(gameServ.toString(),"{}[],:\"");
 
 			for (int j=1 ; j<19 ; j++) {
@@ -140,8 +143,8 @@ public class Ex2 implements Runnable{
 			}
 			int group = arrP.size()/numAgents;
 
-			System.out.println(group);
-			System.out.println(pS.size());
+			System.out.println("Pokemons in each group: " + group);
+			System.out.println("Number of pokemon groups to catch: " + pS.size());
 			for (int j=0 ; j<numAgents ; j++ ){
 				ArrayList<CL_Pokemon> agentI = pS.get(j);
 				agentI.add(run);
@@ -153,8 +156,10 @@ public class Ex2 implements Runnable{
 				arrP.remove(run);
 				run = minBetweenPokemon(arrP,run,ga);
 			}
+
 			for(int j=0 ; j<numAgents ; j++){
 				gameServ.addAgent(pS.get(j).get(0).get_edge().getSrc());
+				System.out.println("agents: " + gameServ.getAgents());
 				System.out.println(pS.get(j).get(0).get_edge().getSrc());
 			}
 			System.out.println(pS);
@@ -203,7 +208,7 @@ public class Ex2 implements Runnable{
 		return ans;
 	}
 
-	/** 
+	/**
 	 * Moves each of the agents along the edge,
 	 * in case the agent is on a node the next destination (next edge) is chosen (randomly).
 	 * @param game
@@ -214,22 +219,23 @@ public class Ex2 implements Runnable{
 
 		String lg = game.move();
 		List<CL_Agent> log = Arena.getAgents(lg, gg);
+		System.out.println("CL_agents: "+log);
 		_ar.setAgents(log);
 		String fs =  game.getPokemons();
 		List<CL_Pokemon> ffs = Arena.json2Pokemons(fs);
 		_ar.setPokemons(ffs);
-	//	ArrayList<OOP_Point3D> rs = new ArrayList<OOP_Point3D>();
-		for(int i=0 ; i< log.size() ; i++){
-			CL_Agent ag = log.get(i);
-			for(int j=0 ; j<groups.get(i).size()-1 ; j++){
-				game.chooseNextEdge(groups.get(i).get(j).get_edge().getSrc(),groups.get(i).get(j).get_edge().getDest());
-				game.move();
-				game.chooseNextEdge(groups.get(i).get(j).get_edge().getDest(),groups.get(i).get(j+1).get_edge().getSrc());
-			}
-			game.chooseNextEdge(groups.get(i).get(groups.get(i).size()-1).get_edge().getSrc(),groups.get(i).get(groups.get(i).size()-1).get_edge().getDest());
+//	//	ArrayList<OOP_Point3D> rs = new ArrayList<OOP_Point3D>();
+//		for(int i=0 ; i< log.size() ; i++){
+//			CL_Agent ag = log.get(i);
+//			for(int j=0 ; j<groups.get(i).size()-1 ; j++){
+//				game.chooseNextEdge(groups.get(i).get(j).get_edge().getSrc(),groups.get(i).get(j).get_edge().getDest());
+//				game.move();
+//				game.chooseNextEdge(groups.get(i).get(j).get_edge().getDest(),groups.get(i).get(j+1).get_edge().getSrc());
+//			}
+//			game.chooseNextEdge(groups.get(i).get(groups.get(i).size()-1).get_edge().getSrc(),groups.get(i).get(groups.get(i).size()-1).get_edge().getDest());
 
 
-		}
+	}
 
 
 //		for(int i=0;i<log.size();i++) {
@@ -244,7 +250,7 @@ public class Ex2 implements Runnable{
 //				System.out.println("Agent: "+id+", val: "+v+"   turned to node: "+dest);
 //			}
 //		}
-	}
+//	}
 	/**
 	 * a very simple random walk implementation!
 	 * @param g
@@ -276,7 +282,7 @@ public class Ex2 implements Runnable{
 
 		_win.update(_ar);
 
-	
+
 		_win.show();
 		String info = game.toString();
 		JSONObject line;
@@ -294,8 +300,8 @@ public class Ex2 implements Runnable{
 				CL_Pokemon c = cl_fs.get(ind);
 				int nn = c.get_edge().getDest();
 				if(c.getType()<0 ) {nn = c.get_edge().getSrc();}
-				
-				game.addAgent(nn);
+
+//				game.addAgent(nn);
 			}
 		}
 		catch (JSONException e) {e.printStackTrace();}
