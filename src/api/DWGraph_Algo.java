@@ -29,20 +29,28 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 	private directed_weighted_graph dwg;
 
 
-
+	/**
+	 * Init the graph on which this set of algorithms operates on.
+	 * @param g
+	 */
 	@Override
 	public void init(directed_weighted_graph g) {
 		this.dwg = g;
-
-
 	}
 
+	/**
+	 * Return the underlying graph of which this class works.
+	 * @return
+	 */
 	@Override
 	public directed_weighted_graph getGraph() {
-		// TODO Auto-generated method stub
 		return dwg;
 	}
 
+	/**
+	 * Compute a deep copy of this weighted graph.
+	 * @return
+	 */
 	@Override
 	public directed_weighted_graph copy() {
 		directed_weighted_graph copy = new DWGraph_DS();
@@ -65,6 +73,11 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return copy;
 	}
 
+	/**
+	 *
+	 *Returns true if and only if  there is a valid path from each node to each other node.
+	 * @return
+	 */
 	@Override
 	public boolean isConnected() {
 		if(dwg.getV().size()==0) return true;
@@ -101,7 +114,13 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return true;
 	}
 
-
+	/**
+	 * returns the length of the shortest path between src to dest
+	 * if no such path --> returns -1
+	 * @param src - start node
+	 * @param dest - end (target) node
+	 * @return
+	 */
 	@Override
 	public double shortestPathDist(int src, int dest) {
 		for(node_data vertex : dwg.getV()) {
@@ -129,7 +148,14 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return Double.parseDouble(dwg.getNode(dest).getInfo());
 	}
 
-
+	/**
+	 * returns the the shortest path between src to dest - as an ordered List of nodes:
+	 * src--> n1-->n2-->...dest
+	 * if no such path --> returns null
+	 * @param src - start node
+	 * @param dest - end (target) node
+	 * @return
+	 */
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
 		for(node_data vertex : dwg.getV()) {
@@ -167,7 +193,11 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return ans;
 	}
 
-
+	/**
+	 * Saves this weighted (directed) graph to the given.
+	 * @param file - the file name (may include a relative path).
+	 * @return
+	 */
 	@Override
 	public boolean save(String file) {
 	
@@ -207,7 +237,11 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return true;
 	}
 
-
+	/**
+	 * This method load a graph to this graph algorithm.
+	 * @param file - file name of JSON file
+	 * @return
+	 */
 	@Override
 	public boolean load(String file) {
 		try {
