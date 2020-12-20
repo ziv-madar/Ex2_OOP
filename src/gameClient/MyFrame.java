@@ -20,14 +20,17 @@ import java.util.List;
  * code and not to take it "as is".
  *
  */
-public class MyFrame extends JFrame{
+public class MyFrame extends JPanel{
 	private int _ind;
 	private Arena _ar;
 	private gameClient.util.Range2Range _w2f;
-	MyFrame(String a) {
-		super(a);
+	MyFrame() {
+//		super(a);
 		int _ind = 0;
+//		createPanel();
 	}
+
+
 	public void update(Arena ar) {
 		this._ar = ar;
 		updateFrame();
@@ -40,7 +43,8 @@ public class MyFrame extends JFrame{
 		directed_weighted_graph g = _ar.getGraph();
 		_w2f = Arena.w2f(g,frame);
 	}
-	public void paint(Graphics g) {
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		int w = this.getWidth();
 		int h = this.getHeight();
 		g.clearRect(0, 0, w, h);
