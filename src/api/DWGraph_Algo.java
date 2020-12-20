@@ -254,48 +254,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
     }
 
 
-	public static void main(String[] args) {
-
-		DWGraph_DS g = new DWGraph_DS();
-		g.addNode(new NodeData(1));
-		g.addNode(new NodeData(2));
-		g.addNode(new NodeData(3));
-		g.addNode(new NodeData(4));
-		g.addNode(new NodeData(5));
-		g.addNode(new NodeData(6));
-		g.connect(1, 2, 3);
-		g.connect(1, 3, 9);
-		g.connect(1, 5, 4);
-		g.connect(2, 1, 2);
-		g.connect(2, 3, 5);
-		g.connect(2, 6, 1);
-		g.connect(4, 1, 20);
-		g.connect(1, 4, 5);
-		g.connect(5, 3, 2);
-		g.connect(6, 3, 0.5);
-		g.connect(3, 1, 3);
-
-
-		DWGraph_Algo ga = new DWGraph_Algo();
-		ga.init(g);
-		System.out.println(ga.isConnected());
-		System.out.println(ga.shortestPathDist(1, 3));
-		System.out.println(ga.shortestPath(1, 3));
-		ga.save("ziv.txt");
-		
-		DWGraph_DS g2 = new DWGraph_DS();
-		g2.addNode(new NodeData(17));
-		System.out.println("gaOLD:"+ga.getGraph());
-		ga.init(g2);
-		System.out.println("GAnew: "+ga.getGraph());
-		ga.load("ziv.txt");
-		System.out.println(ga.getGraph());
-		
-		
-
-
-
-	}
 
 
 

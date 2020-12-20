@@ -225,47 +225,6 @@ public class DWGraph_DS implements directed_weighted_graph {
 		}
 		return ans;
 	}
-	public static void main(String[] args) {
-
-		DWGraph_DS g = new DWGraph_DS();
-		node_data n0 = new NodeData(1);
-		node_data n1 = new NodeData(2);
-		node_data n2 = new NodeData(3);
-		node_data n3 = new NodeData(4);
-		node_data n4 = new NodeData(5);
-		node_data n13 = new NodeData(13);
-		node_data n15 = new NodeData(15);
-		g.addNode(n0);
-		g.addNode(n1);
-		g.addNode(n2);
-		g.addNode(n3);
-		g.addNode(n4);
-		g.addNode(n13);
-		g.addNode(n15);
-		g.connect(1, 2, 10);
-		g.connect(1, 3, 2);
-		g.connect(1, 4, 5);
-		g.connect(1, 5, 7);
-		g.connect(3, 5, 4);
-		g.connect(13, 1, 17);
-		g.connect(15, 1, 38.5);
-		System.out.println(g.getNode(1));
-		System.out.println(g.getNode(6));
-		System.out.println(g);
-		for(int i = 1; i<=5;i++) {
-			System.out.println(i+"="+g.getE(i));
-		}
-		System.out.println(g);
-		System.out.println(g.removeNode(1));
-		System.out.println(g);
-		System.out.println(g.removeEdge(3, 5));
-
-
-
-
-
-
-	}
 
 
 }
