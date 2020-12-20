@@ -62,8 +62,7 @@ public class EdgeData implements edge_data {
 
 	@Override
 	public String toString() {
-		return "EdgeData [src=" + src + ", dest=" + dest + ", tag=" + tag + ", weight=" + weight + ", info=" + info
-				+ "]";
+		return src+"->"+dest+"("+weight+")";
 	}
 	
 

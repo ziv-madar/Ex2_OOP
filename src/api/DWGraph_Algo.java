@@ -17,13 +17,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-
-
-
-
-
-
-
 public class DWGraph_Algo implements dw_graph_algorithms {
 
 	private directed_weighted_graph dwg;
@@ -251,7 +244,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
             FileReader reader=new FileReader(file);
             directed_weighted_graph dwg=gson.fromJson(reader,DWGraph_DS.class);
-			System.out.println(dwg);
             this.init(dwg);
         }
         catch (FileNotFoundException e){
