@@ -24,19 +24,19 @@ public class EdgeData implements edge_data {
 
 	@Override
 	public int getDest() {
-		// TODO Auto-generated method stub
+
 		return this.dest;
 	}
 
 	@Override
 	public double getWeight() {
-		// TODO Auto-generated method stub
+
 		return this.weight;
 	}
 
 	@Override
 	public String getInfo() {
-		// TODO Auto-generated method stub
+
 		return this.info;
 	}
 
@@ -48,7 +48,7 @@ public class EdgeData implements edge_data {
 
 	@Override
 	public int getTag() {
-		// TODO Auto-generated method stub
+
 		return this.tag;
 	}
 
